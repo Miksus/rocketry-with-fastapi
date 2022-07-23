@@ -39,8 +39,8 @@ python app/main.py
 
 Read more about Rocketry:
 
-- Source code: https://github.com/Miksus/rocketry
 - Documentation: https://rocketry.readthedocs.io/
+- Source code: https://github.com/Miksus/rocketry
 
 Read more about FastAPI:
 
