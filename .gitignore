@@ -1,3 +1,43 @@
+# Personal
+private/
+
+# Env
+.env
+.venv
+env/
+env_linux/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Front end related
+# -----------------
+
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Back end related
+# -----------------
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -11,16 +51,6 @@ dist/*
 
 # Jupyter Notebook
 .ipynb_checkpoints
-
-# Environments
-.env
-.venv
-env/
-env_linux/
-venv/
-ENV/
-env.bak/
-venv.bak/
 
 # IDE
 .vscode/
