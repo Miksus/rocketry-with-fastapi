@@ -1,4 +1,4 @@
-# Demo: Rocketry with FastAPI
+# Demo: Rocketry with FastAPI (and React)
 
 This is a demo for creating a scheduler with an API.
 We use [Rocketry](https://rocketry.readthedocs.io/)
@@ -35,6 +35,21 @@ pip install -r requirements.txt
 python app/main.py
 ```
 
+## Front-end
+
+For the front-end, download [Node](https://nodejs.org/en/), [npm](https://www.npmjs.com/) and [yarn](https://classic.yarnpkg.com).
+Then change to frontend directory to install the Node modules:
+
+```npm
+yarn install
+```
+
+Then start the server:
+
+```npm
+yarn start
+```
+
 ## What next?
 
 Read more about Rocketry:
@@ -46,3 +61,11 @@ Read more about FastAPI:
 
 - Documentation: https://fastapi.tiangolo.com/
 - Source code: https://github.com/tiangolo/fastapi
+
+Read more about React:
+
+- Documentation: https://reactjs.org/
+- Source code: https://github.com/facebook/react
+
+
+Author: [Mikael Koli](https://github.com/Miksus)
