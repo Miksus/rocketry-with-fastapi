@@ -50,6 +50,8 @@ Then start the server:
 yarn start
 ```
 
+![UI example](https://github.com/Miksus/rocketry-with-fastapi/blob/master/docs/demo.gif)
+
 ## What next?
 
 Read more about Rocketry:
