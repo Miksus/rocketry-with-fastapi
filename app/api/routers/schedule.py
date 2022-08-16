@@ -1,100 +1,45 @@
-"""
-This file contains FastAPI app.
-Modify the routes as you wish.
-"""
-
-import datetime
+from typing import List, Optional, Literal
 import time
-from typing import List, Literal, Optional
-from pydantic import BaseModel, Field, validator
-from redbird.oper import in_, between, greater_equal
 
-from fastapi import APIRouter, FastAPI, Query
-from fastapi.middleware.cors import CORSMiddleware
+from fastapi import APIRouter, Query
+from redbird.oper import between, in_, greater_equal
 
-from scheduler import app as app_rocketry
+from app.scheduler.main import app as app_rocketry
+from app.api.models import Log, Task
 
-app = FastAPI(
-    title="Rocketry with FastAPI",
-    description="This is a REST API for a scheduler. It uses FastAPI as the web framework and Rocketry for scheduling."
-)
 session = app_rocketry.session
 
-
-# Enable CORS so that the React application 
-# can communicate with FastAPI. Modify these
-# if you put it to production.
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost", "http://localhost:3000"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Models (for serializing JSON)
-# -----------------------------
-
-class Task(BaseModel):
-    name: str
-    description: Optional[str]
-    priority: int
-
-    start_cond: str
-    end_cond: str
-    timeout: Optional[int]
-
-    disabled: bool
-    force_termination: bool
-    force_run: bool
-
-    status: str
-    is_running: bool
-    last_run: Optional[datetime.datetime]
-    last_success: Optional[datetime.datetime]
-    last_fail: Optional[datetime.datetime]
-    last_terminate: Optional[datetime.datetime]
-    last_inaction: Optional[datetime.datetime]
-    last_crash: Optional[datetime.datetime]
-
-class Log(BaseModel):
-    timestamp: Optional[datetime.datetime] = Field(alias="created")
-    task_name: str
-    action: str
 
 # Session Config
 # --------------
 
-router_config = APIRouter(tags=["config"])
+router = APIRouter(tags=["Rocketry"])
 
-@router_config.get("/session/config")
+@router.get("/session/config", tags=["config"])
 async def get_session_config():
     return session.config
 
-@router_config.patch("/session/config")
+@router.patch("/session/config", tags=["config"])
 async def patch_session_config(values:dict):
     for key, val in values.items():
         setattr(session.config, key, val)
 
-
 # Session Parameters
 # ------------------
 
-router_params = APIRouter(tags=["session parameters"])
-
-@router_params.get("/session/parameters")
+@router.get("/session/parameters", tags=["parameters"])
 async def get_session_parameters():
     return session.parameters
 
-@router_params.get("/session/parameters/{name}")
+@router.get("/session/parameters/{name}", tags=["parameters"])
 async def get_session_parameters(name):
     return session.parameters[name]
 
-@router_params.put("/session/parameters/{name}")
+@router.put("/session/parameters/{name}", tags=["parameters"])
 async def put_session_parameter(name:str, value):
     session.parameters[name] = value
 
-@router_params.delete("/session/parameters/{name}")
+@router.delete("/session/parameters/{name}", tags=["parameters"])
 async def delete_session_parameter(name:str):
     del session.parameters[name]
 
@@ -102,9 +47,7 @@ async def delete_session_parameter(name:str):
 # Session Actions
 # ---------------
 
-router_session = APIRouter(tags=["session"])
-
-@router_session.post("/session/shut_down")
+@router.post("/session/shut_down", tags=["session"])
 async def shut_down_session():
     session.shut_down()
 
@@ -112,9 +55,7 @@ async def shut_down_session():
 # Task
 # ----
 
-router_task = APIRouter(tags=["task"])
-
-@router_task.get("/tasks", response_model=List[Task])
+@router.get("/tasks", response_model=List[Task], tags=["task"])
 async def get_tasks():
     return [
         Task(
@@ -126,11 +67,11 @@ async def get_tasks():
         for task in session.tasks
     ]
 
-@router_task.get("/tasks/{task_name}")
+@router.get("/tasks/{task_name}", tags=["task"])
 async def get_task(task_name:str):
     return session[task_name]
     
-@router_task.patch("/tasks/{task_name}")
+@router.patch("/tasks/{task_name}", tags=["task"])
 async def patch_task(task_name:str, values:dict):
     task = session[task_name]
     for attr, val in values.items():
@@ -140,22 +81,22 @@ async def patch_task(task_name:str, values:dict):
 # Task Actions
 # ------------
 
-@router_task.post("/tasks/{task_name}/disable")
+@router.post("/tasks/{task_name}/disable", tags=["task"])
 async def disable_task(task_name:str):
     task = session[task_name]
     task.disabled = True
 
-@router_task.post("/tasks/{task_name}/enable")
+@router.post("/tasks/{task_name}/enable", tags=["task"])
 async def enable_task(task_name:str):
     task = session[task_name]
     task.disabled = False
 
-@router_task.post("/tasks/{task_name}/terminate")
+@router.post("/tasks/{task_name}/terminate", tags=["task"])
 async def disable_task(task_name:str):
     task = session[task_name]
     task.force_termination = True
 
-@router_task.post("/tasks/{task_name}/run")
+@router.post("/tasks/{task_name}/run", tags=["task"])
 async def run_task(task_name:str):
     task = session[task_name]
     task.force_run = True
@@ -164,9 +105,7 @@ async def run_task(task_name:str):
 # Logging
 # -------
 
-router_logs = APIRouter(tags=["logs"])
-
-@router_logs.get("/logs", description="Get tasks")
+@router.get("/logs", description="Get tasks", tags=["logs"])
 async def get_task_logs(action: Optional[List[Literal['run', 'success', 'fail', 'terminate', 'crash', 'inaction']]] = Query(default=[]),
                         min_created: Optional[int]=Query(default=None), max_created: Optional[int] = Query(default=None),
                         past: Optional[int]=Query(default=None),
@@ -192,7 +131,7 @@ async def get_task_logs(action: Optional[List[Literal['run', 'success', 'fail', 
 
     return logs
 
-@router_logs.get("/task/{task_name}/logs", description="Get tasks")
+@router.get("/task/{task_name}/logs", description="Get tasks", tags=["logs"])
 async def get_task_logs(task_name:str,
                         action: Optional[List[Literal['run', 'success', 'fail', 'terminate', 'crash', 'inaction']]] = Query(default=[]),
                         min_created: Optional[int]=Query(default=None), max_created: Optional[int] = Query(default=None)):
@@ -203,13 +142,3 @@ async def get_task_logs(task_name:str,
         filter['created'] = between(min_created, max_created, none_as_open=True)
 
     return session[task_name].logger.filter_by(**filter).all()
-
-
-# Add routers
-# -----------
-
-app.include_router(router_config)
-app.include_router(router_params)
-app.include_router(router_session)
-app.include_router(router_task)
-app.include_router(router_logs)
