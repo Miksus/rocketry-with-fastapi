@@ -12,7 +12,7 @@ group = Grouper()
 @group.task(every('10 seconds', based="finish"))
 async def do_permanently():
     "This runs for really long time"
-    await asyncio.sleep(600000)
+    await asyncio.sleep(60)
 
 @group.task(every('2 seconds', based="finish"))
 async def do_short():

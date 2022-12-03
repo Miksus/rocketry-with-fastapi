@@ -12,14 +12,12 @@ from redbird.oper import in_, between, greater_equal
 from fastapi import APIRouter, FastAPI, Query
 from fastapi.middleware.cors import CORSMiddleware
 
-
+from .routers.schedule import router as sched_router
 
 app = FastAPI(
     title="Rocketry with FastAPI",
     description="This is a REST API for a scheduler. It uses FastAPI as the web framework and Rocketry for scheduling."
 )
-
-
 
 # Enable CORS so that the React application 
 # can communicate with FastAPI. Modify these
@@ -32,14 +30,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-
-
 # Add routers
 # -----------
 
-app.include_router(router_config)
-app.include_router(router_params)
-app.include_router(router_session)
-app.include_router(router_task)
-app.include_router(router_logs)
+app.include_router(sched_router)
