@@ -9,9 +9,9 @@ from rocketry import Rocketry
 from rocketry.args import TaskLogger, Config, EnvArg
 from rocketry.log import MinimalRecord
 
-from .tasks import example
-
 app = Rocketry(config={"execution": "async"})
+
+from .tasks import example
 
 @app.setup()
 def setup_app(logger=TaskLogger(), config=Config(), env=EnvArg("ENV", default="dev")):
