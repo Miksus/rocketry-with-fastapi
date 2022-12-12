@@ -31,6 +31,7 @@ local_scheme = "no-local-version"
 test = [
     "pytest",
     "requests",
+    "httpx",
     "pytest-asyncio",
 ]
 
