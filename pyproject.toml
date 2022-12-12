@@ -6,7 +6,7 @@ build-backend = "setuptools.build_meta"
 packages = ["app"]
 
 [project]
-name = "rocketry"
+name = "app"
 description = "Rocketry example: Rocketry & FastAPI"
 readme = "README.md"
 license = {file="LICENSE"}
