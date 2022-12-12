@@ -30,12 +30,12 @@ def test_get_params():
     assert body == {}
 
 def test_post_task_run():
-    assert not client.get("/tasks/do_short").json()["force_run"]
+    assert not client.get("/tasks/do_short").json()["set_running"]
 
     response = client.post("/tasks/do_short/run")
     assert response.status_code == 200
 
-    assert client.get("/tasks/do_short").json()["force_run"]
+    assert client.get("/tasks/do_short").json()["set_running"]
 
 def test_post_task_disable_enable():
     assert not client.get("/tasks/do_short").json()["disabled"]
