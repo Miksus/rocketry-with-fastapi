@@ -2,7 +2,7 @@
 This file contains Rocketry app.
 Add your tasks here, conditions etc. here.
 """
-from redbird.repos import SQLRepo
+from redbird.repos import SQLRepo, MemoryRepo
 from sqlalchemy import create_engine
 
 from rocketry import Rocketry
@@ -16,16 +16,21 @@ app = Rocketry(config={"execution": "async"})
 @app.setup()
 def setup_app(logger=TaskLogger(), config=Config(), env=EnvArg("ENV", default="dev")):
     "Set up the app"
-    repo = SQLRepo(engine=create_engine("sqlite:///app.db"), table="tasks", model=MinimalRecord, id_field="created")
-    logger.set_repo(repo)
     if env == "prod":
+        conn_string = "sqlite:///app.db"
+        repo = SQLRepo(engine=create_engine(conn_string), table="tasks", model=MinimalRecord, id_field="created", if_missing="create")
+
         config.silence_task_prerun = True
         config.silence_task_logging = True
         config.silence_cond_check = True
     else:
+        repo = MemoryRepo(model=MinimalRecord, if_missing="create")
+
         config.silence_task_prerun = False
         config.silence_task_logging = False
         config.silence_cond_check = False
+    
+    logger.set_repo(repo)
 
 app.include_grouper(example.group)
 
