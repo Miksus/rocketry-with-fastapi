@@ -17,7 +17,7 @@ router = APIRouter(tags=["Rocketry"])
 
 @router.get("/session/config", tags=["config"])
 async def get_session_config():
-    return session.config
+    return session.config.dict(exclude={"time_func", "func_run_id", "cls_lock"})
 
 @router.patch("/session/config", tags=["config"])
 async def patch_session_config(values:dict):
