@@ -7,8 +7,8 @@ import logging
 
 import uvicorn
 
-from api import app as app_fastapi
-from scheduler import app as app_rocketry
+from app.api.main import app as app_fastapi
+from app.scheduler.main import app as app_rocketry
 
 
 class Server(uvicorn.Server):
@@ -17,23 +17,34 @@ class Server(uvicorn.Server):
     Uvicorn server overrides signals and we need to include
     Rocketry to the signals."""
     def handle_exit(self, sig: int, frame) -> None:
-        app_rocketry.session.shut_down()
+        print("Shutting", self.force_exit)
+        app_rocketry.session.shut_down(force=self.force_exit)
         return super().handle_exit(sig, frame)
 
-
-async def main():
+async def run_apps(fastapi=True, rocketry=True):
     "Run Rocketry and FastAPI"
     server = Server(config=uvicorn.Config(app_fastapi, workers=1, loop="asyncio"))
 
-    api = asyncio.create_task(server.serve())
-    sched = asyncio.create_task(app_rocketry.serve())
+    apps = []
+    if fastapi:
+        task = asyncio.create_task(server.serve())
+        apps.append(task)
+    if rocketry:
+        task = asyncio.create_task(app_rocketry.serve())
+        apps.append(task)
 
-    await asyncio.wait([sched, api])
+    await asyncio.wait(apps)
 
-if __name__ == "__main__":
+
+def main(**kwargs):
+    "Run Rocketry and FastAPI"
+
     # Print Rocketry's logs to terminal
     logger = logging.getLogger("rocketry.task")
     logger.addHandler(logging.StreamHandler())
 
-    # Run both applications
-    asyncio.run(main())
+    # Start the apps
+    asyncio.run(run_apps(**kwargs))
+
+if __name__ == "__main__":
+    main()

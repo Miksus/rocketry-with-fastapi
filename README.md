@@ -11,8 +11,8 @@ This contains three source files:
 - ``app/scheduler.py``: Rocketry application
 - ``app/main.py``: Main launch script
 
-Add your tasks need to ``app/scheduler.py`` and 
-modify ``app/api.py`` as needed.
+Add your tasks need to ``app/scheduler/tasks/`` and 
+modify API routes in ``app/api/routes/`` as needed.
 
 ## Installation
 
@@ -32,7 +32,7 @@ pip install -r requirements.txt
 ## Running
 
 ```console
-python app/main.py
+python -m app
 ```
 
 ## Front-end
