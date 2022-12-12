@@ -94,7 +94,7 @@ async def disable_task(task_name:str):
 @router.post("/tasks/{task_name}/run", tags=["task"])
 async def run_task(task_name:str):
     task = session[task_name]
-    task.force_run = True
+    task.run()
 
 
 # Logging
