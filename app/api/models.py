@@ -1,8 +1,8 @@
 import datetime
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, validator
 from typing import Optional
 
-class Task(BaseModel):
+class TaskModel(BaseModel):
     name: str
     description: Optional[str]
     priority: int
@@ -11,11 +11,14 @@ class Task(BaseModel):
     end_cond: str
     timeout: Optional[int]
 
+    permanent: bool
+    multilaunch: Optional[bool]
     disabled: bool
+
     force_termination: bool
     force_run: bool
 
-    status: str
+    status: Optional[str]
     is_running: bool
     last_run: Optional[datetime.datetime]
     last_success: Optional[datetime.datetime]
@@ -23,6 +26,31 @@ class Task(BaseModel):
     last_terminate: Optional[datetime.datetime]
     last_inaction: Optional[datetime.datetime]
     last_crash: Optional[datetime.datetime]
+
+    @validator("start_cond", pre=True)
+    def parse_start_cond(cls, value):
+        return str(value)
+
+    @validator("end_cond", pre=True)
+    def parse_end_cond(cls, value):
+        return str(value)
+
+    @classmethod
+    def from_task(cls, task):
+        extra_attrs = (
+            "status",
+            "last_run", "last_success", "last_fail", "last_terminate", "last_crash", "last_inaction",
+            "is_running"
+        )
+        attrs = task.dict()
+        attrs.update(
+            {
+                attr: getattr(task, attr)
+                for attr in extra_attrs
+            }
+            
+        )
+        return cls(**attrs)
 
 class Log(BaseModel):
     timestamp: Optional[datetime.datetime] = Field(alias="created")

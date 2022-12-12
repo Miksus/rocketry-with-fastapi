@@ -5,7 +5,7 @@ from fastapi import APIRouter, Query
 from redbird.oper import between, in_, greater_equal
 
 from app.scheduler.main import app as app_rocketry
-from app.api.models import Log, Task
+from app.api.models import Log, TaskModel
 
 session = app_rocketry.session
 
@@ -55,15 +55,10 @@ async def shut_down_session():
 # Task
 # ----
 
-@router.get("/tasks", response_model=List[Task], tags=["task"])
+@router.get("/tasks", response_model=List[TaskModel], tags=["task"])
 async def get_tasks():
     return [
-        Task(
-            start_cond=str(task.start_cond), 
-            end_cond=str(task.end_cond),
-            is_running=task.is_running,
-            **task.dict(exclude={'start_cond', 'end_cond'})
-        )
+        TaskModel.from_task(task)
         for task in session.tasks
     ]
 
