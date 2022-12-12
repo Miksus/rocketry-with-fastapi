@@ -20,12 +20,15 @@ class TaskModel(BaseModel):
 
     status: Optional[str]
     is_running: bool
+    set_running: bool
     last_run: Optional[datetime.datetime]
     last_success: Optional[datetime.datetime]
     last_fail: Optional[datetime.datetime]
     last_terminate: Optional[datetime.datetime]
     last_inaction: Optional[datetime.datetime]
     last_crash: Optional[datetime.datetime]
+
+    batches: list
 
     @validator("start_cond", pre=True)
     def parse_start_cond(cls, value):
@@ -50,6 +53,7 @@ class TaskModel(BaseModel):
             }
             
         )
+        attrs["set_running"] = task.batches != []
         return cls(**attrs)
 
 class Log(BaseModel):
