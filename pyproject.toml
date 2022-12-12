@@ -24,15 +24,8 @@ dependencies = [
 ]
 
 [tool.setuptools_scm]
-write_to = "rocketry/_version.py"
+write_to = "app/_version.py"
 local_scheme = "no-local-version"
-
-[project.urls]
-Homepage = 'https://github.com/Miksus/rocketry'
-Documentation = 'https://rocketry.readthedocs.io'
-Funding = 'https://github.com/sponsors/Miksus'
-Source = 'https://github.com/Miksus/rocketry'
-Changelog = 'https://rocketry.readthedocs.io/en/stable/versions.html'
 
 [project.optional-dependencies]
 test = [
