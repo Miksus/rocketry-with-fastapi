@@ -1,4 +1,8 @@
-from typing import List, Optional, Literal
+from typing import List, Optional
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
 import time
 
 from fastapi import APIRouter, Query

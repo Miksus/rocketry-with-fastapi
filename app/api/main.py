@@ -3,13 +3,7 @@ This file contains FastAPI app.
 Modify the routes as you wish.
 """
 
-import datetime
-import time
-from typing import List, Literal, Optional
-from pydantic import BaseModel, Field, validator
-from redbird.oper import in_, between, greater_equal
-
-from fastapi import APIRouter, FastAPI, Query
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from .routers.schedule import router as sched_router
