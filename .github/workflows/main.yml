@@ -41,6 +41,6 @@ jobs:
         python -m pip install .[test]
         
     - name: Run test suite
-      working-directory: ./requirements
+      working-directory: /tmp
       run: |
         python -m pytest --pyargs app -W error::UserWarning -W error::FutureWarning -W error::DeprecationWarning
