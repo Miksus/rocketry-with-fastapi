@@ -64,7 +64,7 @@ async def get_tasks():
 
 @router.get("/tasks/{task_name}", tags=["task"])
 async def get_task(task_name:str):
-    return session[task_name]
+    return TaskModel.from_task(session[task_name])
     
 @router.patch("/tasks/{task_name}", tags=["task"])
 async def patch_task(task_name:str, values:dict):
